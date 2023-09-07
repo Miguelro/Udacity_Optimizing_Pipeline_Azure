@@ -71,7 +71,7 @@ def main():
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
 
-    model_name = "LogReg_C_{}_maxit_{}.pkl".format(args.C,args.max_iter)
+    model_name = "HyperDrive_model.pkl"
     joblib.dump(model, 'outputs/'+model_name)
 
 if __name__ == '__main__':
