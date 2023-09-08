@@ -77,7 +77,7 @@ THe main differences between the two approaches:
 ## Future work
 **What are some areas of improvement for future experiments? Why might these improvements help the model?**
 
-* We could start by applying some scaling method to the `LogisticRegressionClassifier` pipeline and check if the accuracy of the model reaches similar values to those of AutoML. Normally, this type of model (Logistic Regression) does not require scaling of variables, but this fact can favor the convergence of the underlying optimization that it uses and, therefore, suppose an improvement in accuray or faster results.
+* We could start by applying some scaling method to the `LogisticRegressionClassifier` pipeline and check if the accuracy of the model reaches similar values to those of AutoML. Normally, this type of model (Logistic Regression) does not require scaling of variables, but this technique can favor the convergence of the underlying optimization methods that it uses and, therefore, suppose an improvement in accuracy or faster results.
 
 * The dataset is quite imbalanced. We can check this fact in the notebook `udacity-project.ipynb`. The AutoML job shows as that here are 2473 positive samples out of 22076, which is only the 11.2% of the total set. In order to better evaluate the models I would suggest to use another performance metric such as `f1-score` or `AUC`, since these metrics take into account the performance of the model in each class separately. We could also try to downsample the majority class or oversample the minority class, so as to achieve a balanced dataset.
 
