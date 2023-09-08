@@ -17,6 +17,9 @@ This model is then compared to an Azure AutoML run.
 The dataset contains customer information on marketing campaigns of a financial institution. We seek to predict whether the customer will contrat a product or not (variable `y`). Therefore, we are facing a classification task.
 
 **In 1-2 sentences, explain the solution: e.g. "The best performing model was a ..."**
+The best perfoming model  was a VotingEnsemble composed of a pool of 7 weaker-learning pipelines that together form a strong learner. The accuracy obtained was 91.9391%.
+
+The resulting model is comoposed of 7 individual models and a set of weights that allows to aggregate the result of each individual model into a unique classification result. The models that compose the ensemble are 5 `XGBoostClassifier`, a `LightGBMClassifier` and a `SGDClassifierWrapper`.
 
 ## Scikit-learn Pipeline
 **Explain the pipeline architecture, including data, hyperparameter tuning, and classification algorithm.**
@@ -63,9 +66,19 @@ The highest weights are assigned to a `XGBoostClassifier` and the `LightGBMClass
 ## Pipeline comparison
 **Compare the two models and their performance. What are the differences in accuracy? In architecture? If there was a difference, why do you think there was one?**
 
+In terms of accuracy, the best performing model is the `VotingEnsemble` obtained from the AutoML process (accuracy 91.9391%). However, the one obtained with the SKlean pipeline (`LogisticRegression`) is much more simpler and the reduction in accuracy is not that much (Accuracy 91,089%). Depending on the needs of the project we will recommend one or another. If the data changes a lot, maybe we prefer to have a poorer perfomance but a model that takes into account all that new data instantaneously. However, if we prefer the model that gives us the best predictions, no matter the time spent on training the model, we will choose the `VotingEnsemble`.
+
+THe main differences between the two approaches:
+
+* Both of them have the same initial preprocessing part. However, the model obtained with AutoML includes also an additional step, that scales the features to the same range of values, ensuring that all features has the same initial importance no matter its original range of values.
+
+* The AutoML best performing model is an ensemble of weaker learners, whereas the `LogisticRegressionClassifier` consists in just one model that may struggle to identify all the non-linearities in our data.
+
 ## Future work
 **What are some areas of improvement for future experiments? Why might these improvements help the model?**
 
-## Proof of cluster clean up
-**If you did not delete your compute cluster in the code, please complete this section. Otherwise, delete this section.**
-**Image of cluster marked for deletion**
+* We could start by applying some scaling method to the `LogisticRegressionClassifier` pipeline and check if the accuracy of the model reaches similar values to those of AutoML. Normally, this type of model (Logistic Regression) does not require scaling of variables, but this fact can favor the convergence of the underlying optimization that it uses and, therefore, suppose an improvement in accuray or faster results.
+
+* The dataset is quite imbalanced. We can check this fact in the notebook `udacity-project.ipynb`. The AutoML job shows as that here are 2473 positive samples out of 22076, which is only the 11.2% of the total set. In order to better evaluate the models I would suggest to use another performance metric such as `f1-score` or `AUC`, since these metrics take into account the performance of the model in each class separately. We could also try to downsample the majority class or oversample the minority class, so as to achieve a balanced dataset.
+
+* As mentioned before, if we have to choose one of these models for production purposes, I would definitely not select the VotingEnsemble model, since the slight improvement in the accuracy of the predictions does not justify losing inference speed and model explainability. It is better to choose a model that gives slightly worse predictions but it is easier to explain, such as, XGBoost or LightGBM.
